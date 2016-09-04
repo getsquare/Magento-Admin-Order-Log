@@ -40,13 +40,17 @@ class Getsquare_AdminOrderLog_Model_Observer
     public function salesOrderGridCollectionLoadBefore(Varien_Event_Observer $observer)
     {
         $collection = $observer->getOrderGridCollection();
-        $collection->getSelect()
-            ->joinLeft(
-                array(
-                    'sales_order_placed_by' => Mage::getSingleton('core/resource')->getTableName('admin_order_log/entry')
-                ),
-                'main_table.increment_id = sales_order_placed_by.log_order_increment_id',
-                array('sales_order_placed_by.placed_by_user')
-        );
+
+        if(Mage::app()->getRequest()->getControllerName() == 'sales_order'){
+            $collection->getSelect()
+                ->joinLeft(
+                    array(
+                        'sales_order_placed_by' => Mage::getSingleton('core/resource')->getTableName('admin_order_log/entry')
+                    ),
+                    'main_table.increment_id = sales_order_placed_by.log_order_increment_id',
+                    array('sales_order_placed_by.placed_by_user')
+                );
+        }
+
     }
 }
